@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -11,6 +12,7 @@
 <meta name="author" content="Imago Creative Group">
 
 <style>
+
 :root{
 --primary:#00e0ff;
 --dark:#0a0a0a;
@@ -173,7 +175,30 @@ margin:auto;
 section h2{
 text-align:center;
 font-size:38px;
-margin-bottom:50px;
+margin-bottom:35px;
+}
+
+/* SERVICE SEARCH */
+
+.service-tools{
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-bottom:25px;
+}
+
+.service-tools input{
+padding:6px 10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:12px;
+}
+
+.service-tools select{
+padding:6px 10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:12px;
 }
 
 /* SERVICES */
@@ -239,28 +264,6 @@ font-weight:900;
 color:var(--primary);
 }
 
-.countdown{
-margin:35px 0;
-display:flex;
-justify-content:center;
-gap:12px;
-flex-wrap:wrap;
-}
-
-.time{
-background:#111;
-padding:14px 16px;
-border-radius:14px;
-min-width:70px;
-}
-
-.time span{
-display:block;
-font-size:22px;
-font-weight:900;
-color:var(--primary);
-}
-
 .ebook button{
 margin-top:35px;
 padding:18px 42px;
@@ -305,16 +308,19 @@ section h2{
 font-size:30px;
 }
 
+.service-tools{
+justify-content:center;
 }
+
+}
+
 </style>
 </head>
 
 <body>
 
 <nav>
-
 <div class="navbox">
-
 <strong>Imago Creative Group</strong>
 
 <div class="nav-links">
@@ -324,7 +330,6 @@ font-size:30px;
 </div>
 
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
-
 </div>
 
 <div class="mobile-menu" id="mobileMenu">
@@ -332,11 +337,9 @@ font-size:30px;
 <a href="#ebook" onclick="toggleMenu()">E-book</a>
 <a href="#kontak" onclick="toggleMenu()">Kontak</a>
 </div>
-
 </nav>
 
 <div class="hero">
-
 <div>
 
 <h1>Bangun Brand Digital <span>Yang Menghasilkan</span></h1>
@@ -346,15 +349,8 @@ Partner kreatif & marketing untuk UMKM, bisnis, dan personal brand.
 </p>
 
 <div class="cta">
-
-<button class="primary" onclick="scrollToId('layanan')">
-Lihat Layanan
-</button>
-
-<button class="secondary" onclick="scrollToId('ebook')">
-Promo E-book
-</button>
-
+<button class="primary" onclick="scrollToId('layanan')">Lihat Layanan</button>
+<button class="secondary" onclick="scrollToId('ebook')">Promo E-book</button>
 </div>
 
 <div class="trust">
@@ -365,19 +361,35 @@ Promo E-book
 </div>
 
 </div>
-
 </div>
 
 <section id="layanan">
 
 <h2>Katalog Harga Layanan</h2>
 
+<div class="service-tools">
+
+<input
+type="text"
+id="searchService"
+placeholder="Cari..."
+onkeyup="searchService()"
+>
+
+<select id="filterDivisi" onchange="filterService()">
+<option value="all">Divisi</option>
+<option value="Visual">Visual</option>
+<option value="Kreatif">Kreatif</option>
+<option value="Marketing">Marketing</option>
+</select>
+
+</div>
+
 <div class="grid" id="services"></div>
 
 </section>
 
 <section id="ebook">
-
 <div class="ebook">
 
 <h2>E-book Digital Imago</h2>
@@ -394,15 +406,12 @@ Beli E-book
 </button>
 
 </div>
-
 </section>
 
 <footer id="kontak">
-
 <strong>Imago Creative Group</strong><br>
 Instagram: @ImagoCreative.id<br>
 TikTok: @imago.creative.group
-
 </footer>
 
 <script>
@@ -410,12 +419,8 @@ TikTok: @imago.creative.group
 /* MENU */
 
 function toggleMenu(){
-
 const m=document.getElementById("mobileMenu");
-
-m.style.display =
-m.style.display==="block" ? "none" : "block";
-
+m.style.display = m.style.display==="block" ? "none" : "block";
 }
 
 /* SERVICES */
@@ -449,29 +454,64 @@ const services=[
 
 const box=document.getElementById("services");
 
-services.forEach(s=>{
+function renderServices(list){
+
+box.innerHTML="";
+
+list.forEach(s=>{
 
 box.innerHTML+=`
-
 <div class="card">
-
 <div class="divisi">Divisi ${s[0]}</div>
-
 <h3>${s[1]}</h3>
-
 <p>${s[2]}</p>
-
-<button onclick="order('${s[1]}')">
-Pesan via WhatsApp
-</button>
-
+<button onclick="order('${s[1]}')">Pesan via WhatsApp</button>
 </div>
-
 `;
 
 });
 
-/* ACTION */
+}
+
+renderServices(services);
+
+/* SEARCH */
+
+function searchService(){
+
+let input=document
+.getElementById("searchService")
+.value
+.toLowerCase();
+
+let filtered=services.filter(s=>
+s[1].toLowerCase().includes(input)
+);
+
+renderServices(filtered);
+
+}
+
+/* FILTER */
+
+function filterService(){
+
+let f=document
+.getElementById("filterDivisi")
+.value;
+
+if(f=="all"){
+renderServices(services);
+return;
+}
+
+let filtered=services.filter(s=>s[0]==f);
+
+renderServices(filtered);
+
+}
+
+/* ORDER */
 
 function order(n){
 
@@ -481,19 +521,12 @@ const t=encodeURIComponent(
 "Halo Imago Creative Group, saya ingin memesan: "+n
 );
 
-window.open(
-`https://wa.me/${wa}?text=${t}`,
-"_blank"
-);
+window.open(`https://wa.me/${wa}?text=${t}`,"_blank");
 
 }
 
 function scrollToId(id){
-
-document
-.getElementById(id)
-.scrollIntoView({behavior:"smooth"});
-
+document.getElementById(id).scrollIntoView({behavior:"smooth"});
 }
 
 /* COULTDOWN */
@@ -506,7 +539,6 @@ document.querySelector(".discount");
 const timer = setInterval(function(){
 
 const now = new Date().getTime();
-
 const distance = promoDate - now;
 
 const days = Math.floor(distance/(1000*60*60*24));
@@ -523,11 +555,8 @@ ${seconds} Detik
 `;
 
 if(distance < 0){
-
 clearInterval(timer);
-
 countdownBox.innerHTML="Promo telah berakhir";
-
 }
 
 },1000);
@@ -538,3 +567,4 @@ countdownBox.innerHTML="Promo telah berakhir";
 
 </body>
 </html>
+```
